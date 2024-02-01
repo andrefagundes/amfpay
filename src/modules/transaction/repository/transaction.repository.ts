@@ -33,4 +33,31 @@ export default class TransactionRepository implements TransactionGateway {
       createdAt: createdTransaction.createdAt,
     })
   }
+
+  async transferFunds(input: Transaction): Promise<Transaction> {
+    try {
+      await prisma.$transaction(async (transaction) => {
+        await prisma.user.update({
+          where: { id: input.senderId },
+          data: { wallet: { decrement: input.value } },
+        })
+
+        await prisma.user.update({
+          where: { id: input.receiverId },
+          data: { wallet: { increment: input.value } },
+        })
+      })
+
+      return new Transaction({
+        value: input.value,
+        senderId: input.senderId,
+        receiverId: input.receiverId,
+        createdAt: input.createdAt,
+      })
+    } catch (err) {
+      const errorMessage = (err as Error).message || 'Unknown error'
+      console.error(`Error during funds transfer:${errorMessage}`)
+      throw new Error('Funds transfer failed')
+    }
+  }
 }

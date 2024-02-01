@@ -1,12 +1,18 @@
+import Id from '../../@shared/domain/value-object/id.value-object'
+
 export interface UserFacadeInputDto {
-  value: number
-  senderId: string
+  userId: string
 }
 
 export interface UserFacadeOutputDto {
-  isBalance: boolean
+  id?: Id
+  password?: string
+  fullName: string
+  document: string
+  wallet: number
+  email: string
 }
 
 export default interface UserFacadeInterface {
-  process(input: UserFacadeInputDto): Promise<UserFacadeOutputDto>
+  find(input: UserFacadeInputDto): Promise<UserFacadeOutputDto>
 }

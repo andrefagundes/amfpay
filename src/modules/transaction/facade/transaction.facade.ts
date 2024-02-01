@@ -5,8 +5,15 @@ import TransactionFacadeInterface, {
 } from './facade.interface'
 
 export default class TransactionFacade implements TransactionFacadeInterface {
-  constructor(private processTransactionUseCase: UseCaseInterface) {}
-  process(input: TransactionFacadeInputDto): Promise<TransactionFacadeOutputDto> {
+  private processTransactionUseCase: UseCaseInterface
+
+  constructor(processTransactionUseCase: UseCaseInterface) {
+    this.processTransactionUseCase = processTransactionUseCase
+  }
+
+  process(
+    input: TransactionFacadeInputDto,
+  ): Promise<TransactionFacadeOutputDto> {
     return this.processTransactionUseCase.execute(input)
   }
 }

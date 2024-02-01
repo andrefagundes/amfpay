@@ -1,9 +1,6 @@
 import UseCaseInterface from '../../../@shared/usecase/use-case.interface'
 import UserGateway from '../../gateway/user.gateway'
-import {
-  CheckBalanceInputDto,
-  CheckBalanceOutputDto,
-} from './check-balance.dto'
+import { UserInputDto, UserOutputDto } from './find-user.dto'
 
 export default class UserUseCase implements UseCaseInterface {
   private userRepository: UserGateway
@@ -13,18 +10,19 @@ export default class UserUseCase implements UseCaseInterface {
   }
 
   async execute(
-    input: CheckBalanceInputDto,
-  ): Promise<CheckBalanceOutputDto | null> {
-    const user = await this.userRepository.findById(input.senderId)
+    input: UserInputDto,
+  ): Promise<UserOutputDto | null> {
+    const user = await this.userRepository.findById(input.userId)
 
     if (!user.id) {
       return null
     }
 
-    const isBalance = user.wallet >= input.value
-
     return {
-      isBalance,
+      fullName: user.fullName,
+      document: user.document,
+      wallet: user.wallet,
+      email: user.email
     }
   }
   catch(error: any) {

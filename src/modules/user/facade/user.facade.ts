@@ -5,8 +5,13 @@ import UserFacadeInterface, {
 } from './facade.interface'
 
 export default class UserFacade implements UserFacadeInterface {
-  constructor(private checkBalanceUseCase: UseCaseInterface) {}
-  process(input: UserFacadeInputDto): Promise<UserFacadeOutputDto> {
-    return this.checkBalanceUseCase.execute(input)
+  private userUseCase: UseCaseInterface
+
+  constructor(userUseCase: UseCaseInterface) {
+    this.userUseCase = userUseCase
+  }
+
+  find(input: UserFacadeInputDto): Promise<UserFacadeOutputDto> {
+    return this.userUseCase.execute(input)
   }
 }
