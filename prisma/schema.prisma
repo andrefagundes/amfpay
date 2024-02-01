@@ -1,0 +1,43 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  fullName  String
+  document  String    @unique
+  email     String    @unique
+  password  String
+  wallet    Float     @default(0)
+  isMerchant Boolean  @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  sentTransactions Transaction[] @relation("SenderTransactions")
+  receivedTransactions Transaction[] @relation("ReceiverTransactions")
+
+  @@index([fullName], name: "idx_user_fullName")
+  @@map("users")
+}
+
+model Transaction {
+  id            String      @id @default(uuid())
+  value         Float
+  createdAt     DateTime @default(now())
+
+  sender        User     @relation("SenderTransactions", fields: [senderId], references: [id])
+  senderId      String
+
+  receiver      User     @relation("ReceiverTransactions", fields: [receiverId], references: [id])
+  receiverId    String
+
+  @@index([senderId], name: "idx_transaction_senderId")
+  @@index([receiverId], name: "idx_transaction_receiverId")
+  @@map("transactions")
+}
