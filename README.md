@@ -29,9 +29,9 @@ instalá-lo em um wsl, fica a seu critério.
 >>> 2. Docker Compose:
 
 O Docker Compose geralmente é incluído na instalação do Docker, mas verifique se você tem a versão correta. Para instalar ou atualizar o Docker Compose, siga as instruções no site Docker.
-Git (opcional):
 
-Se você deseja clonar o repositório diretamente, certifique-se de ter o Git instalado. Você pode baixá-lo aqui.
+>>> Git (opcional):
+Se você deseja clonar o repositório diretamente, certifique-se de ter o Git instalado.
 
 ## Pontos de Melhoria
 
