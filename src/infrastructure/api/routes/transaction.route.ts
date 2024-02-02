@@ -1,14 +1,12 @@
-import { FastifyInstance } from 'fastify'
+import { IoCContainer } from './../../utils/ioc-container'
+import { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import { TransactionController } from '../controllers/transaction.controller'
-import { container } from '../../utils/container'
 
-export default function transactionRoutes(
+const transactionRoutes: FastifyPluginAsync = async (
   fastify: FastifyInstance,
-  next: () => void,
-): void {
-  const transactionController = container.resolve<TransactionController>(
-    'TransactionController',
-  )
+) => {
+  const transactionController =
+    fastify.container.resolve<TransactionController>('TransactionController')
 
   fastify.post('/transaction', async (request, reply) => {
     try {
@@ -20,6 +18,6 @@ export default function transactionRoutes(
       reply.code(500).send({ success: false, error: 'Internal Server Error' })
     }
   })
-
-  next()
 }
+
+export default transactionRoutes

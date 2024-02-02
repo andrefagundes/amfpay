@@ -19,7 +19,7 @@ async function main() {
         email: 'adriano@example.com',
         fullName: 'Adriano Henrique',
         document: '65478458748',
-        wallet: 100,
+        wallet: 10000,
         password: hashedPassword,
       },
       {
@@ -28,6 +28,7 @@ async function main() {
         document: '56458795000132',
         wallet: 50,
         password: hashedPassword,
+        isMerchant: true
       },
     ],
   })

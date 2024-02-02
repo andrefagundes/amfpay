@@ -1,5 +1,6 @@
-import { FastifyInstance, FastifyServerOptions } from 'fastify'
+import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
 import transactionRoute from './routes/transaction.route'
+import configureContainerPlugin from '../utils/container'
 
 const buildFastify = async (): Promise<FastifyInstance> => {
   const options: FastifyServerOptions = {
@@ -7,36 +8,37 @@ const buildFastify = async (): Promise<FastifyInstance> => {
     ajv: {},
   }
 
-  const fastify: FastifyInstance = require('fastify')(options)
+  const app: FastifyInstance = fastify(options)
 
   try {
-    await fastify.register(transactionRoute)
+    configureContainerPlugin(app)
+    await app.register(transactionRoute)
   } catch (err) {
     const errorMessage = (err as Error).message || 'Unknown error'
-    fastify.log.error(`Error registering routes and plugins: ${errorMessage}`)
+    app.log.error(`Error registering routes and plugins: ${errorMessage}`)
     process.exit(1)
   }
 
-  fastify.setErrorHandler((error, request, reply) => {
-    fastify.log.error(`Global error: ${error.message}`)
+  app.setErrorHandler((error, request, reply) => {
+    app.log.error(`Global error: ${error.message}`)
     reply.status(500).send({
       error: 'An unexpected error occurred on the server.',
     })
   })
 
-  fastify.get('/health', async (request, reply) => {
+  app.get('/health', async (request, reply) => {
     return { status: 'ok' }
   })
 
   const gracefulShutdown = async () => {
     try {
-      fastify.log.info('Initiating server shutdown...')
-      await fastify.close()
-      fastify.log.info('Server successfully shut down.')
+      app.log.info('Initiating server shutdown...')
+      await app.close()
+      app.log.info('Server successfully shut down.')
       process.exit(0)
     } catch (err) {
       const errorMessage = (err as Error).message || 'Unknown error'
-      fastify.log.error(`Error during server shutdown: ${errorMessage}`)
+      app.log.error(`Error during server shutdown: ${errorMessage}`)
       process.exit(1)
     }
   }
@@ -44,7 +46,7 @@ const buildFastify = async (): Promise<FastifyInstance> => {
   process.on('SIGTERM', gracefulShutdown)
   process.on('SIGINT', gracefulShutdown)
 
-  return fastify
+  return app
 }
 
 export default buildFastify

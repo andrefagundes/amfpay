@@ -1,12 +1,22 @@
+import { FastifyInstance } from 'fastify'
+import { IoCContainer } from './ioc-container'
 import { TransactionFactory } from '../../modules/transaction/factory/transaction.factory'
 import { TransactionController } from '../api/controllers/transaction.controller'
-import { IoCContainer } from './ioc-container'
 
-const container = new IoCContainer<any>()
+declare module 'fastify' {
+  interface FastifyInstance {
+    container: IoCContainer<any>
+  }
+}
 
-const transactionFactory = TransactionFactory.create()
+const configureContainerPlugin = (fastify: FastifyInstance): void => {
+  const container = new IoCContainer<any>()
 
-const transactionController = new TransactionController(transactionFactory)
-container.register('TransactionController', transactionController)
+  const transactionFactory = TransactionFactory.create()
+  const transactionController = new TransactionController(transactionFactory)
+  container.register('TransactionController', transactionController)
 
-export { container }
+  fastify.container = container
+}
+
+export default configureContainerPlugin
