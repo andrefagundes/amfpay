@@ -1,13 +1,21 @@
 import TransactionFacadeInterface from '../../../modules/transaction/facade/facade.interface'
 
+export interface TransactionInputDto {
+  value: number
+  senderId: string
+  receiverId: string
+}
+
 class TransactionController {
   constructor(private transactionFacade: TransactionFacadeInterface) {}
 
-  async processTransaction(transactionPayload: any): Promise<void> {
+  async processTransaction(
+    transactionPayload: TransactionInputDto,
+  ): Promise<void> {
     try {
       await this.transactionFacade.process(transactionPayload)
     } catch (error) {
-      throw new Error('Erro ao processar a transação.')
+      throw (`Error processing the transaction: ${error}`)
     }
   }
 }

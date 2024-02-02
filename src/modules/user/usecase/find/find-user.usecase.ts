@@ -22,10 +22,11 @@ export default class UserUseCase implements UseCaseInterface {
       fullName: user.fullName,
       document: user.document,
       wallet: user.wallet,
-      email: user.email
+      email: user.email,
+      isMerchant: user.isMerchant
     }
   }
   catch(error: any) {
-    throw new Error('Error checking balance')
+    throw new Error('Error when searching for user')
   }
 }

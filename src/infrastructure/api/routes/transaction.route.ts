@@ -1,20 +1,26 @@
 import { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import { TransactionController } from '../controllers/transaction.controller'
 
-const transactionRoutes: FastifyPluginAsync = async (
-  fastify: FastifyInstance,
-) => {
-  const transactionController =
-    fastify.container.resolve<TransactionController>('TransactionController')
+interface TransactionPayload {
+  senderId: string
+  receiverId: string
+  value: number
+}
 
-  fastify.post('/transaction', async (request, reply) => {
+const transactionRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
+  const transactionController = app.container.resolve<TransactionController>(
+    'TransactionController',
+  )
+
+  app.post('/transaction', async (request, reply) => {
     try {
-      const transactionPayload = request.body
+      const { senderId, receiverId, value } = request.body as TransactionPayload
+      const transactionPayload = { senderId, receiverId, value }
       await transactionController.processTransaction(transactionPayload)
+
       reply.code(201).send({ success: true })
-    } catch (error) {
-      console.error(error)
-      reply.code(500).send({ success: false, error: 'Internal Server Error' })
+    } catch (error: any) {
+      reply.code(500).send({ success: false, error })
     }
   })
 }

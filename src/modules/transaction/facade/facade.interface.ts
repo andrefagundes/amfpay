@@ -1,6 +1,7 @@
 export interface TransactionFacadeInputDto {
-  orderId: string
-  amount: number
+  value: number
+  senderId: string
+  receiverId: string
 }
 
 export interface TransactionFacadeOutputDto {

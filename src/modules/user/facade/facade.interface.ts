@@ -11,6 +11,7 @@ export interface UserFacadeOutputDto {
   document: string
   wallet: number
   email: string
+  isMerchant: boolean
 }
 
 export default interface UserFacadeInterface {

@@ -7,4 +7,5 @@ export interface UserOutputDto {
   document: string
   wallet: number
   email: string
+  isMerchant: boolean
 }

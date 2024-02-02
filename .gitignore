@@ -5,3 +5,4 @@ dist
 tsconfig.tsbuildinfo
 database
 migrations
+request.http

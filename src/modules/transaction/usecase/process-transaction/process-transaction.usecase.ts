@@ -8,13 +8,6 @@ import {
   ProcessTransactionOutputDto,
 } from './process-transaction.dto'
 
-type checkTransactionInput = {
-  value: number
-  senderId: string
-  document: string
-  wallet: number
-}
-
 export default class TransactionUseCase implements UseCaseInterface {
   private _transactionRepository: TransactionGateway
   private _userFacade: UserFacadeInterface
@@ -41,23 +34,16 @@ export default class TransactionUseCase implements UseCaseInterface {
 
     const user = await this._userFacade.find({ userId: transaction.senderId })
 
-    const checkTransactionInput: checkTransactionInput = {
-      value: transaction.value,
-      senderId: transaction.senderId,
-      document: user.document,
-      wallet: user.wallet,
+    if (!user || user.isMerchant) {
+      throw 'Customer not allowed to transfer!'
     }
 
-    if (!this.checkUserPf(checkTransactionInput)) {
-      throw new Error('Customer not allowed to transfer!')
-    }
-
-    if (!this.checkBalance(checkTransactionInput)) {
-      throw new Error('Insufficient balance!')
+    if (user.wallet <= 0 || user.wallet < transaction.value) {
+      throw 'Insufficient balance!'
     }
 
     if (!(await this._authorizationService.checkAuthorization())) {
-      throw new Error('Unauthorized transfer service')
+      throw 'Unauthorized transfer service'
     }
 
     await this._transactionRepository.transferFunds(transaction)
@@ -73,15 +59,5 @@ export default class TransactionUseCase implements UseCaseInterface {
       receiverId: persistTransaction.receiverId,
       createdAt: persistTransaction.createdAt,
     }
-  }
-
-  private checkUserPf(user: Pick<checkTransactionInput, 'document'>): boolean {
-    return !user.document || user.document.length > 11
-  }
-
-  private checkBalance(
-    user: Pick<checkTransactionInput, 'wallet' | 'value'>,
-  ): boolean {
-    return user.wallet >= user.value
   }
 }
