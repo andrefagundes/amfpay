@@ -12,8 +12,8 @@ declare module 'fastify' {
 const configureContainerPlugin = (fastify: FastifyInstance): void => {
   const container = new IoCContainer<any>()
 
-  const transactionFactory = TransactionFactory.create()
-  const transactionController = new TransactionController(transactionFactory)
+  const transactionFacade = TransactionFactory.create()
+  const transactionController = new TransactionController(transactionFacade)
   container.register('TransactionController', transactionController)
 
   fastify.container = container

@@ -1,4 +1,3 @@
-import { IoCContainer } from './../../utils/ioc-container'
 import { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import { TransactionController } from '../controllers/transaction.controller'
 
