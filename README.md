@@ -1,4 +1,4 @@
-# Nome do Projeto
+# AMFPAY
 
 Amfpay é um projeto de estudo sobre melhores práticas, arquiteturas e metodologias para desenvolver um projeto escalável, de fácil manutenção e performático
 
