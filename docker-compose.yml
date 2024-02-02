@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   db:
+    container_name: db
     image: mysql:latest
     command: --innodb-use-native-aio=0
-    container_name: db
     restart: always
     ports:
       - '3306:3306'
@@ -12,10 +12,13 @@ services:
     volumes:
       - ./database:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=nodedb
+      - MYSQL_DATABASE=dbamfpay
       - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - minha-rede
   
   app:
+    container_name: app
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,8 +26,12 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=${DATABASE_URL}
     volumes:
       - .:/app
     depends_on:
       - db
-    command: sh -c "npm run prisma:dev && npm run start && npx prisma db seed"
+    networks:
+          - minha-rede
+networks:
+  minha-rede:
