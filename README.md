@@ -45,10 +45,6 @@ Se você deseja clonar o repositório diretamente, certifique-se de ter o Git in
 
 ## Pontos de Melhoria
 
-> Validação de inputs
-
-Não me preocupei a primeiro momento pensar em uma validação de inputs para entrada no sistema.
-
 >> Tratamento de Erros
 
 Possui, mas não um tratamento de erros pensando mais a nível de produção, por exemplo, usando um pattern notification,
@@ -83,6 +79,14 @@ Passos para instalar o projeto localmente.
 
 ```bash
 git clone https://github.com/andrefagundes/amfpay.git
+
+### Crie um arquivo .env na raiz do projeto com as seguintes constantes
+
+DATABASE_URL="mysql://root:root@db:3306/dbamfpay"
+
+AUTH_SERVICE_URL = 'https://run.mocky.io/v3/687d8d61-5961-4d70-8309-dc672c64c28d'
+
+TRANSACTION_CREATED_EVENT_STATUS = 'https://run.mocky.io/v3/5698031f-e0d3-4ee3-a401-1eb9125b1144'
 
 # Vá até a raiz do projeto e rode o docker como abaixo
 docker compose up -d
