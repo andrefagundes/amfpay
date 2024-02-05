@@ -9,7 +9,7 @@ export default class TransactionRepository implements TransactionGateway {
   async save(input: Transaction): Promise<Transaction> {
     const createdTransaction = await prisma.transaction.create({
       data: {
-        id: input.id.toString(),
+        id: input.id.id,
         value: input.value,
         createdAt: input.createdAt,
         sender: {

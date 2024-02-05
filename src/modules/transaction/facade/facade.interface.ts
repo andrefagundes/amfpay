@@ -6,11 +6,10 @@ export interface TransactionFacadeInputDto {
 
 export interface TransactionFacadeOutputDto {
   transactionId: string
-  orderId: string
-  amount: number
-  status: string
+  value: number
+  senderId: string
+  receiverId: string
   createdAt: Date
-  updatedAt: Date
 }
 
 export default interface TransactionFacadeInterface {

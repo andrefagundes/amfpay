@@ -18,7 +18,9 @@ export default class TransactionCreatedHandler
         const data = await response.json()
 
         if (data.success) {
-          console.log(`Transaction notification sent: ${event}`)
+          console.log(
+            `Transaction notification sent: ${JSON.stringify(event.eventData)}`,
+          )
           return
         } else {
           retryCount += 1
@@ -48,7 +50,6 @@ export default class TransactionCreatedHandler
           console.error(
             `Error sending transaction notification: ${errorMessage}. Maximum retries reached.`,
           )
-          throw new Error(errorMessage)
         }
       }
     }

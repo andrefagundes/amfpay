@@ -29,12 +29,12 @@ model User {
 model Transaction {
   id            String      @id @default(uuid())
   value         Float
-  createdAt     DateTime @default(now())
+  createdAt     DateTime    @default(now())
 
-  sender        User     @relation("SenderTransactions", fields: [senderId], references: [id])
+  sender        User        @relation("SenderTransactions", fields: [senderId], references: [id])
   senderId      String
 
-  receiver      User     @relation("ReceiverTransactions", fields: [receiverId], references: [id])
+  receiver      User        @relation("ReceiverTransactions", fields: [receiverId], references: [id])
   receiverId    String
 
   @@index([senderId], name: "idx_transaction_senderId")
