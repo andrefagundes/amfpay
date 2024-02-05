@@ -27,6 +27,8 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_URL=${DATABASE_URL}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
+      - TRANSACTION_CREATED_EVENT_STATUS=${TRANSACTION_CREATED_EVENT_STATUS}
     volumes:
       - .:/app
     depends_on:

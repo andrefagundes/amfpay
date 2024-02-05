@@ -11,7 +11,9 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "strictNullChecks": false,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
+    "removeComments": true,
+    "importsNotUsedAsValues": "remove"
   },
   "include": ["src/**/*.ts"],
   "exclude": [

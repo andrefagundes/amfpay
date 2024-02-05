@@ -4,8 +4,12 @@ const startServer = async () => {
   try {
     const app = await buildFastify()
 
-    const PORT = 3000
-    const address = await app.listen(PORT, '0.0.0.0')
+    const optionsObject = {
+      port: Number(process.env.PORT) || 3000,
+      host: '0.0.0.0',
+    }
+
+    const address = app.listen(optionsObject)
     console.log(`Server is now listening on ${address}`)
   } catch (err) {
     const errorMessage = (err as Error).message || 'Unknown error'
