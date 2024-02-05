@@ -1,6 +1,7 @@
 import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
 import transactionRoute from './routes/transaction.route'
 import configureContainerPlugin from '../utils/container'
+import dotenv from 'dotenv'
 
 const buildFastify = async (): Promise<FastifyInstance> => {
   const options: FastifyServerOptions = {
@@ -11,11 +12,12 @@ const buildFastify = async (): Promise<FastifyInstance> => {
   const app: FastifyInstance = fastify(options)
 
   try {
+    dotenv.config()
     configureContainerPlugin(app)
     await app.register(transactionRoute)
   } catch (err) {
     const errorMessage = (err as Error).message || 'Unknown error'
-    app.log.error(`Error registering routes and plugins: ${errorMessage}`)
+    app.log.error(`Error registering routes, plugins and env: ${errorMessage}`)
     process.exit(1)
   }
 
