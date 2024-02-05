@@ -1,6 +1,8 @@
+import EventDispatcherInterface from '../../../@shared/event/dispatcher/event-dispatcher.interface'
 import UseCaseInterface from '../../../@shared/usecase/use-case.interface'
 import UserFacadeInterface from '../../../user/facade/facade.interface'
 import Transaction from '../../domain/transaction.entity'
+import TransactionCreatedEvent from '../../event/transaction-created.event'
 import TransactionGateway from '../../gateway/transaction.gateway'
 import { AuthorizationServiceInterface } from '../../service/authorization.interface'
 import {
@@ -12,15 +14,18 @@ export default class TransactionUseCase implements UseCaseInterface {
   private _transactionRepository: TransactionGateway
   private _userFacade: UserFacadeInterface
   private _authorizationService: AuthorizationServiceInterface
+  private _eventDispatcher: EventDispatcherInterface
 
   constructor(
     userFacade: UserFacadeInterface,
     transactionRepository: TransactionGateway,
     authorizationService: AuthorizationServiceInterface,
+    eventDispatcher: EventDispatcherInterface,
   ) {
     this._userFacade = userFacade
     this._transactionRepository = transactionRepository
     this._authorizationService = authorizationService
+    this._eventDispatcher = eventDispatcher
   }
 
   async execute(
@@ -51,6 +56,9 @@ export default class TransactionUseCase implements UseCaseInterface {
     const persistTransaction = await this._transactionRepository.save(
       transaction,
     )
+
+    const transactionCreatedEvent = new TransactionCreatedEvent(transaction)
+    this._eventDispatcher.notify(transactionCreatedEvent)
 
     return {
       transactionId: persistTransaction.id.id,
