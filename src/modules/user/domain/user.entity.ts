@@ -1,6 +1,5 @@
 import BaseEntity from '../../@shared/domain/entity/base.entity'
 import Id from '../../@shared/domain/value-object/id.value-object'
-import Transaction from '../../transaction/domain/transaction.entity'
 
 type UserProps = {
   id?: Id
@@ -10,8 +9,6 @@ type UserProps = {
   password?: string
   wallet?: number
   isMerchant?: boolean
-  sentTransactions?: Transaction[]
-  receivedTransactions?: Transaction[]
   createdAt?: Date
   updatedAt?: Date
 }
