@@ -3,9 +3,7 @@ import { TransactionController } from '../controllers/transaction.controller'
 import { transactionSchema } from '../../../modules/transaction/validation/transaction.schema'
 
 const transactionRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
-  const transactionController = app.container.resolve<TransactionController>(
-    'TransactionController',
-  )
+  const transactionController = app.container.resolve('TransactionController')
 
   app.post(
     '/transaction',

@@ -5,12 +5,7 @@ export class IoCContainer<T> {
     this.instances.set(key, value)
   }
 
-  resolve<V>(key: string): V | undefined {
-    const instance = this.instances.get(key)
-    return isType<V>(instance) ? instance : undefined
+  resolve(key: string): T {
+    return this.instances.get(key)
   }
-}
-
-function isType<T>(obj: any): obj is T {
-  return typeof obj === 'object' && obj !== null
 }
