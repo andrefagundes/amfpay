@@ -2,12 +2,14 @@ import EventDispatcherInterface from '../../../@shared/event/dispatcher/event-di
 import UseCaseInterface from '../../../@shared/usecase/use-case.interface'
 import UserFacadeInterface from '../../../user/facade/facade.interface'
 import Transaction from '../../domain/transaction.entity'
+import TransactionError from '../../errors/transaction-error'
 import TransactionCreatedEvent from '../../event/transaction-created.event'
 import TransactionGateway from '../../gateway/transaction.gateway'
 import { AuthorizationServiceInterface } from '../../service/authorization.interface'
 import {
   ProcessTransactionInputDto,
   ProcessTransactionOutputDto,
+  UserOutputDto,
 } from './process-transaction.dto'
 
 export default class TransactionUseCase implements UseCaseInterface {
@@ -39,17 +41,9 @@ export default class TransactionUseCase implements UseCaseInterface {
 
     const user = await this._userFacade.find({ userId: transaction.senderId })
 
-    if (!user || user.isMerchant) {
-      throw 'Customer not allowed to transfer!'
-    }
-
-    if (user.wallet <= 0 || user.wallet < transaction.value) {
-      throw 'Insufficient balance!'
-    }
-
-    if (!(await this._authorizationService.checkAuthorization())) {
-      throw 'Unauthorized transfer service'
-    }
+    await this.validateUser(user)
+    await this.validateBalance(user, transaction)
+    await this.validateAuthorization()
 
     await this._transactionRepository.transferFunds(transaction)
 
@@ -66,6 +60,36 @@ export default class TransactionUseCase implements UseCaseInterface {
       senderId: persistTransaction.senderId,
       receiverId: persistTransaction.receiverId,
       createdAt: persistTransaction.createdAt,
+    }
+  }
+
+  private async validateUser(user: UserOutputDto): Promise<void> {
+    if (!user || user.isMerchant) {
+      throw new TransactionError(
+        'Customer not allowed to transfer!',
+        'CUSTOMER_NOT_ALLOWED',
+      )
+    }
+  }
+
+  private async validateBalance(
+    user: UserOutputDto,
+    transaction: Transaction,
+  ): Promise<void> {
+    if (user.wallet <= 0 || user.wallet < transaction.value) {
+      throw new TransactionError(
+        'Insufficient balance!',
+        'INSUFFICIENT_BALANCE',
+      )
+    }
+  }
+
+  private async validateAuthorization(): Promise<void> {
+    if (!(await this._authorizationService.checkAuthorization())) {
+      throw new TransactionError(
+        'Unauthorized transfer service',
+        'UNAUTHORIZED_TRANSFER_SERVICE',
+      )
     }
   }
 }
